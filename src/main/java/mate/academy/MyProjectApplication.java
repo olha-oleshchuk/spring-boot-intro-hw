@@ -26,6 +26,7 @@ public class MyProjectApplication {
             book.setCoverImage("cover.jpg");
 
             bookService.save(book);
+            bookService.findAll();
         };
     }
 }
