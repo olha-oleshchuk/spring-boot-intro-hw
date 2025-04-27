@@ -1,15 +1,17 @@
-package mate.academy.repository.impl;
+package mate.academy.repository;
 
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import mate.academy.exception.DataProcessingException;
+import mate.academy.exception.EntityNotFoundException;
 import mate.academy.model.Book;
-import mate.academy.repository.BookRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
+@Repository
 public class BookRepositoryImpl implements BookRepository {
     private final SessionFactory sessionFactory;
 
@@ -26,11 +28,19 @@ public class BookRepositoryImpl implements BookRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new DataProcessingException("Can't insert book: " + book, e);
+            throw new EntityNotFoundException("Can't insert book: " + book, e);
         } finally {
             if (session != null) {
                 session.close();
             }
+        }
+    }
+
+    @Override
+    public Book getBookById(Long id) {
+        try (EntityManager entityManager = sessionFactory.openSession()) {
+            Book book = entityManager.find(Book.class, id);
+            return book != null ? book : new Book();
         }
     }
 
@@ -39,7 +49,7 @@ public class BookRepositoryImpl implements BookRepository {
         try (Session session = sessionFactory.openSession()) {
             books = session.createQuery("FROM Book", Book.class).getResultList();
         } catch (Exception e) {
-            throw new DataProcessingException("Can't get all books", e);
+            throw new EntityNotFoundException("Can't get all books", e);
         }
         return books;
     }
