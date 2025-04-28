@@ -47,11 +47,17 @@
             <version>6.4.4.Final</version>
         </dependency>
 
-        <!-- mapstruct -->
+        <!-- MapStruct -->
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>1.5.5.Final</version>
+            <version>${mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${mapstruct.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Database (H2 for tests, MySQL for production) -->
@@ -120,7 +126,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Compiler plugin to enable annotation processing for Lombok -->
+            <!-- Compiler plugin to enable annotation processing for Lombok and MapStruct -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
