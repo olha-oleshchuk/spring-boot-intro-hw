@@ -1,15 +1,19 @@
-package mate.academy.repository.impl;
+package mate.academy.repository;
 
+import jakarta.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import mate.academy.exception.DataProcessingException;
+import mate.academy.exception.EntityNotFoundException;
 import mate.academy.model.Book;
-import mate.academy.repository.BookRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
+@Repository
 public class BookRepositoryImpl implements BookRepository {
     private final SessionFactory sessionFactory;
 
@@ -31,6 +35,16 @@ public class BookRepositoryImpl implements BookRepository {
             if (session != null) {
                 session.close();
             }
+        }
+    }
+
+    @Override
+    public Optional<Book> getBookById(Long id) {
+        try (EntityManager entityManager = sessionFactory.openSession()) {
+            Book book = entityManager.find(Book.class, id);
+            return Optional.ofNullable(book);
+        } catch (Exception e) {
+            throw new EntityNotFoundException("Failed to find book by id: " + id, e);
         }
     }
 
