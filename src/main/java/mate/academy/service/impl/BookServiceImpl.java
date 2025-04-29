@@ -1,6 +1,5 @@
 package mate.academy.service.impl;
 
-import jakarta.persistence.EntityManager;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.dao.BookDto;
@@ -10,7 +9,6 @@ import mate.academy.mapper.BookMapper;
 import mate.academy.model.Book;
 import mate.academy.repository.BookRepository;
 import mate.academy.service.BookService;
-import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Service;
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
-    private final EntityManager entityManager;
 
     public BookDto save(CreateBookRequestDto requestDto) {
         Book book = bookMapper.toModel(requestDto);
@@ -28,9 +25,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> findAll() {
-        Session session = entityManager.unwrap(Session.class);
-        session.enableFilter("deletedBookFilter").setParameter("isDeleted", false);
-
         return bookRepository.findAll().stream()
                 .map(bookMapper::toDto)
                 .toList();
@@ -48,8 +42,8 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find book by id " + id));
         bookMapper.updateBookFromDto(bookDto, book);
-        Book updatedBook = bookRepository.save(book);
-        return bookMapper.toDto(updatedBook);
+        bookRepository.save(book);
+        return bookMapper.toDto(book);
     }
 
     @Override
