@@ -1,6 +1,6 @@
 package mate.academy.service.impl;
 
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.dao.BookDto;
@@ -10,6 +10,7 @@ import mate.academy.mapper.BookMapper;
 import mate.academy.model.Book;
 import mate.academy.repository.BookRepository;
 import mate.academy.service.BookService;
+import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final EntityManager entityManager;
 
     public BookDto save(CreateBookRequestDto requestDto) {
         Book book = bookMapper.toModel(requestDto);
@@ -24,9 +26,12 @@ public class BookServiceImpl implements BookService {
         return bookMapper.toDto(book);
     }
 
+    @Override
     public List<BookDto> findAll() {
-        return bookRepository.findAll()
-                .stream()
+        Session session = entityManager.unwrap(Session.class);
+        session.enableFilter("deletedBookFilter").setParameter("isDeleted", false);
+
+        return bookRepository.findAll().stream()
                 .map(bookMapper::toDto)
                 .toList();
     }
@@ -39,17 +44,12 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Transactional
-    public void update(Long id, BookDto bookDto) {
+    public BookDto update(Long id, BookDto bookDto) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find book by id " + id));
-        book.setTitle(bookDto.getTitle());
-        book.setAuthor(bookDto.getAuthor());
-        book.setIsbn(bookDto.getIsbn());
-        book.setPrice(bookDto.getPrice());
-        book.setDescription(bookDto.getDescription());
-        book.setCoverImage(bookDto.getCoverImage());
-        bookRepository.save(book);
+        bookMapper.updateBookFromDto(bookDto, book);
+        Book updatedBook = bookRepository.save(book);
+        return bookMapper.toDto(updatedBook);
     }
 
     @Override
