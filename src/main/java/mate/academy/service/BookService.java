@@ -1,13 +1,14 @@
 package mate.academy.service;
 
-import java.util.List;
 import mate.academy.dao.BookDto;
 import mate.academy.dao.CreateBookRequestDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface BookService {
     BookDto save(CreateBookRequestDto requestDto);
 
-    List<BookDto> findAll();
+    Page<BookDto> findAll(Pageable pageable);
 
     BookDto getById(Long id);
 
