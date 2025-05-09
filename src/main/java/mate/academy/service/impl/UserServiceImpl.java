@@ -8,6 +8,7 @@ import mate.academy.mapper.UserMapper;
 import mate.academy.model.User;
 import mate.academy.repository.UserRepository;
 import mate.academy.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto request)
@@ -22,7 +24,9 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RegistrationException("Can't register user with email " + request.getEmail());
         }
-        User user = userMapper.toModel(request);
+        User user = new User();
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setEmail(request.getEmail());
         userRepository.save(user);
         return userMapper.toDto(user);
     }

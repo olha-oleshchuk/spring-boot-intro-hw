@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+  <!-- roles -->
+  <changeSet id="1-insert-roles" author="olha">
+    <insert tableName="roles">
+      <column name="id" valueNumeric="1"/>
+      <column name="name" value="ADMIN"/>
+    </insert>
+    <insert tableName="roles">
+      <column name="id" valueNumeric="2"/>
+      <column name="name" value="USER"/>
+    </insert>
+  </changeSet>
+
+  <!-- admin user -->
+  <changeSet id="2-insert-admin-user" author="olha">
+    <insert tableName="users">
+      <column name="id" valueNumeric="1"/>
+      <column name="email" value="admin@example.com"/>
+      <column name="password" value="$2a$10$7rGa61L2En5Erq1EIO.zYuIa5KpiDYbLMHq1jz63Pb/Mf81NStq7q"/>
+      <column name="first_name" value="Admin"/>
+      <column name="last_name" value="User"/>
+      <column name="shipping_address" value="Kyiv"/>
+    </insert>
+  </changeSet>
+
+  <!-- admin role -->
+  <changeSet id="3-assign-role-admin" author="olha">
+    <insert tableName="users_roles">
+      <column name="user_id" valueNumeric="1"/>
+      <column name="role_id" valueNumeric="1"/> <!-- ADMIN -->
+    </insert>
+  </changeSet>
+
+  <!-- regular user -->
+  <changeSet id="4-insert-regular-user" author="olha">
+    <insert tableName="users">
+      <column name="id" valueNumeric="2"/>
+      <column name="email" value="user@example.com"/>
+      <column name="password" value="$2a$10$KqJHb0G2HDqz8PZzZTLHyujyiv9dkBQOmHZHpsQx2bK71dNwMG/q6"/>
+      <column name="first_name" value="User"/>
+      <column name="last_name" value="Test"/>
+      <column name="shipping_address" value="Lviv"/>
+    </insert>
+  </changeSet>
+
+  <!-- user role -->
+  <changeSet id="5-assign-role-user" author="olha">
+    <insert tableName="users_roles">
+      <column name="user_id" valueNumeric="2"/>
+      <column name="role_id" valueNumeric="2"/> <!-- USER -->
+    </insert>
+  </changeSet>
+
+</databaseChangeLog>
