@@ -5,9 +5,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import mate.academy.dao.UserLoginRequestDto;
 import mate.academy.dao.UserRegistrationRequestDto;
 import mate.academy.dao.UserResponseDto;
 import mate.academy.exception.RegistrationException;
+import mate.academy.service.AuthService;
 import mate.academy.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
     private final UserService userService;
+    private final AuthService authService;
+
+    @PostMapping("/login")
+    @Operation(summary = "Login user", description = "Authenticates user and returns JWT token")
+    public String login(@RequestBody @Valid UserLoginRequestDto request) {
+        return authService.authenticate(request);
+    }
 
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
