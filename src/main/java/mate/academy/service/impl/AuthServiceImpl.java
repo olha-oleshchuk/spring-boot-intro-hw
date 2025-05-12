@@ -1,31 +1,24 @@
 package mate.academy.service.impl;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import mate.academy.dao.UserLoginRequestDto;
-import mate.academy.model.User;
-import mate.academy.repository.UserRepository;
-import mate.academy.util.HashUtil;
-import mate.academy.util.TokenUtil;
+import mate.academy.util.JwtUtil;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl {
-    private final UserRepository userRepository;
-    private final TokenUtil tokenUtil;
-    private final HashUtil hashUtil;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
 
     public String authenticate(UserLoginRequestDto requestDto) {
-        Optional<User> user = userRepository.findByEmail(requestDto.getEmail());
-        if (user.isEmpty()) {
-            throw new RuntimeException("Can't login");
-        }
-        String userPasswordFromDb = user.get().getPassword();
-        String hashedPassword = HashUtil.hashPassword(requestDto.getPassword(), hashUtil.getSalt());
-        if (!hashedPassword.equals(userPasswordFromDb)) {
-            throw new RuntimeException("Can't login");
-        }
-        return tokenUtil.generateToken(requestDto.getEmail());
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(requestDto.getEmail(),
+                        requestDto.getPassword())
+        );
+        return jwtUtil.generateToken(authentication.getName());
     }
 }

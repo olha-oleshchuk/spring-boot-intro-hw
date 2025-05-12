@@ -2,8 +2,11 @@ package mate.academy.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -15,12 +18,9 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @EnableMethodSecurity
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
-
-    public SecurityConfig(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -39,8 +39,7 @@ public class SecurityConfig {
                                         "/error",
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**",
-                                        "/swagger-resources/**",
-                                        "/webjars/**")
+                                        "/swagger-resources/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
@@ -50,5 +49,15 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .userDetailsService(userDetailsService)
                 .build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(getPasswordEncoder());
+        return authenticationManagerBuilder.build();
     }
 }
