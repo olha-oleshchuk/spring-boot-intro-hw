@@ -31,11 +31,11 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RegistrationException("Can't register user with email " + request.getEmail());
         }
-        User user = new User();
+        User user = userMapper.toModel(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setEmail(request.getEmail());
-        Role roleUser = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new EntityNotFoundException("Default role not found"));
+        Role roleUser = roleRepository.findByRoleName(Role.RoleName.ROLE_USER)
+                .orElseThrow(() -> new EntityNotFoundException("Default role "
+                        + Role.RoleName.ROLE_USER + " not found"));
         user.setRoles(Set.of(roleUser));
         userRepository.save(user);
         return userMapper.toDto(user);
