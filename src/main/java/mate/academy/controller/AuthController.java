@@ -3,9 +3,11 @@ package mate.academy.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mate.academy.dao.UserLoginRequestDto;
+import mate.academy.dao.UserLoginResponseDto;
 import mate.academy.dao.UserRegistrationRequestDto;
 import mate.academy.dao.UserResponseDto;
 import mate.academy.exception.RegistrationException;
@@ -21,13 +23,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Authentication", description = "Endpoints for user registration and login")
 public class AuthController {
     private final UserService userService;
     private final AuthService authService;
 
     @PostMapping("/login")
     @Operation(summary = "Login user", description = "Authenticates user and returns JWT token")
-    public String login(@RequestBody @Valid UserLoginRequestDto request) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User successfully logined"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "401",
+                    description = "Unauthorized, there are wrong credentials")
+    })
+    public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto request) {
         return authService.authenticate(request);
     }
 
