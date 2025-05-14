@@ -33,7 +33,7 @@ public interface BookMapper {
             bookDto.setCategoryIds(categoryIds);
         }
     }
-//edit
+
     default Set<Category> mapCategoryIdsToCategories(Set<Long> categoryIds) {
         return categoryIds.stream()
                 .map(id -> {
