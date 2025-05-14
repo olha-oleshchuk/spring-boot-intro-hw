@@ -19,7 +19,7 @@ public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
 
     public BookDto save(CreateBookRequestDto requestDto) {
-        Book book = bookMapper.toModel(requestDto);
+        Book book = bookMapper.toEntity(requestDto);
         bookRepository.save(book);
         return bookMapper.toDto(book);
     }

@@ -2,6 +2,7 @@ package mate.academy.mapper;
 
 import mate.academy.config.MapperConfig;
 import mate.academy.dao.BookDto;
+import mate.academy.dao.BookDtoWithoutCategoryIds;
 import mate.academy.dao.CreateBookRequestDto;
 import mate.academy.model.Book;
 import org.mapstruct.Mapper;
@@ -11,8 +12,9 @@ import org.mapstruct.MappingTarget;
 public interface BookMapper {
     BookDto toDto(Book book);
 
-    Book toModel(CreateBookRequestDto requestDto);
+    BookDtoWithoutCategoryIds toDtoWithoutCategories(Book book);
+
+    Book toEntity(CreateBookRequestDto requestDto);
 
     void updateBookFromDto(CreateBookRequestDto dto, @MappingTarget Book entity);
-
 }
