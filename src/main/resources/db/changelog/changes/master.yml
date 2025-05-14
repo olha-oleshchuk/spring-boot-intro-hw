@@ -9,3 +9,7 @@ databaseChangeLog:
       file: db.changelog.changes/insert-roles-and-admin-user.xml
   - include:
       file: db.changelog.changes/insert-users-and-assign-roles.yml
+  - include:
+      file: db.changelog.changes/add-is-deleted-column-to-users.yml
+  - include:
+      file: db.changelog.changes/create-book_category-table.yml

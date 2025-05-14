@@ -1,7 +1,9 @@
 package mate.academy.service.impl;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.dao.BookDto;
+import mate.academy.dao.BookDtoWithoutCategoryIds;
 import mate.academy.dao.CreateBookRequestDto;
 import mate.academy.exception.EntityNotFoundException;
 import mate.academy.mapper.BookMapper;
@@ -52,5 +54,13 @@ public class BookServiceImpl implements BookService {
             throw new EntityNotFoundException("Can't delete book. ID " + id + " not found.");
         }
         bookRepository.deleteById(id);
+    }
+
+    @Override
+    public List<BookDtoWithoutCategoryIds> findBooksByCategoryId(Long id) {
+        List<Book> books = bookRepository.findAllByCategoryId(id);
+        return books.stream()
+                .map(bookMapper::toDtoWithoutCategories)
+                .toList();
     }
 }
