@@ -1,6 +1,5 @@
 package mate.academy.mapper;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import mate.academy.config.MapperConfig;
@@ -35,7 +34,7 @@ public interface BookMapper {
         }
     }
 
-    default Set<Category> mapCategoryIdsToCategories(List<Long> categoryIds) {
+    default Set<Category> mapCategoryIdsToCategories(Set<Long> categoryIds) {
         return categoryIds.stream()
                 .map(id -> {
                     Category category = new Category();
