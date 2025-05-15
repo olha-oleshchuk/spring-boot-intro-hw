@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-book_category-table
+      id: create-books-categories-table
       author: olha
       changes:
         - createTable:
-            tableName: book_category
+            tableName: books_categories
             columns:
               - column:
                   name: book_id
@@ -35,14 +35,3 @@ databaseChangeLog:
                 referencedTableName: categories
                 referencedColumnNames: id
                 onDelete: CASCADE
-
-  - changeSet:
-      id: create-index-on-category_id
-      author: olha
-      changes:
-        - createIndex:
-            indexName: idx_category_id
-            tableName: book_category
-            columns:
-              - column:
-                  name: category_id
