@@ -20,6 +20,7 @@ public class CreateBookRequestDto {
     private BigDecimal price;
     private String description;
     private String coverImage;
+    //nknk
     @NotNull
     private Set<Long> categoryIds;
 }
