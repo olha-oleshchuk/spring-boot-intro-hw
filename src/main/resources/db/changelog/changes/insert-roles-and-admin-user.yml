@@ -1,7 +1,7 @@
 databaseChangeLog:
   # roles
   - changeSet:
-      id: 1-insert-roles
+      id: insert-roles
       author: olha
       changes:
         - insert:
@@ -21,7 +21,7 @@ databaseChangeLog:
 
   # admin user
   - changeSet:
-      id: 2-insert-admin-user
+      id: insert-admin-user
       author: olha
       changes:
         - insert:
@@ -42,7 +42,7 @@ databaseChangeLog:
 
   # admin role
   - changeSet:
-      id: 3-assign-role-admin
+      id: assign-role-admin
       author: olha
       changes:
         - insert:
@@ -55,7 +55,7 @@ databaseChangeLog:
 
   # regular user
   - changeSet:
-      id: 4-insert-regular-user
+      id: insert-regular-user
       author: olha
       changes:
         - insert:
@@ -76,7 +76,7 @@ databaseChangeLog:
 
   # user role
   - changeSet:
-      id: 5-assign-role-user
+      id: assign-role-user
       author: olha
       changes:
         - insert:

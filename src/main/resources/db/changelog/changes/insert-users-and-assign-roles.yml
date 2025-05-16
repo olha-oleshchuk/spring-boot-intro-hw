@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: insert-users-and-assign-roles
-      author: kohta
+      author: olha
       changes:
         - insert:
             tableName: users
