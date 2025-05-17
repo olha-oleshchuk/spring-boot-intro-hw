@@ -1,7 +1,7 @@
 package mate.academy.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import mate.academy.dao.CategoryDto;
+import mate.academy.dao.category.CategoryDto;
 import mate.academy.exception.EntityNotFoundException;
 import mate.academy.mapper.CategoryMapper;
 import mate.academy.model.Category;
@@ -49,7 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteById(Long id) {
         if (!categoryRepository.existsById(id)) {
-            throw new EntityNotFoundException("Can't delete category. ID " + id + " not found.");
+            throw new EntityNotFoundException("Can't find category by id " + id);
         }
         categoryRepository.deleteById(id);
     }

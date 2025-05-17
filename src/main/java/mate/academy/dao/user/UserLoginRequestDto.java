@@ -1,4 +1,4 @@
-package mate.academy.dao;
+package mate.academy.dao.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

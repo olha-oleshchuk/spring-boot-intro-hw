@@ -11,21 +11,20 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@SQLDelete(sql = "UPDATE shoppingCarts SET is_deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE shopping_carts SET is_deleted = true WHERE id=?")
 @SQLRestriction("is_deleted = false")
-@Table(name = "shoppingCarts")
+@Table(name = "shopping_carts")
 public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
     private boolean isDeleted = false;
 
-    @ManyToMany
-    @JoinTable(name = "shoppingCarts_ cartItems",
-            joinColumns = @JoinColumn(name = "shoppingCarts_id"),
-            inverseJoinColumns = @JoinColumn(name = "cartItems_id"))
+    @OneToMany(mappedBy = "shopping_carts", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CartItem> cartItem = new HashSet<>();
 }
