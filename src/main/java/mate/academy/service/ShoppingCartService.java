@@ -1,6 +1,6 @@
 package mate.academy.service;
 
-import mate.academy.dao.shoppingCart.ShoppingCartResponseDto;
+import mate.academy.dao.shoppingcart.ShoppingCartResponseDto;
 import mate.academy.model.User;
 
 public interface ShoppingCartService {

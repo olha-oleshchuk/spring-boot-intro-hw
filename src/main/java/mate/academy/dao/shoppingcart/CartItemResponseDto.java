@@ -1,4 +1,4 @@
-package mate.academy.dao.shoppingCart;
+package mate.academy.dao.shoppingcart;
 
 public class CartItemResponseDto {
     private Long id;

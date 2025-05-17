@@ -1,8 +1,8 @@
-package mate.academy.dao.shoppingCart;
+package mate.academy.dao.shoppingcart;
 
+import java.util.Set;
 import mate.academy.model.CartItem;
 import mate.academy.model.User;
-import java.util.Set;
 
 public class ShoppingCartResponseDto {
     private Long id;

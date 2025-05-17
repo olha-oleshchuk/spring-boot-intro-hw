@@ -1,75 +1,121 @@
 package mate.academy.service.impl;
 
+import java.util.HashSet;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import mate.academy.dao.shoppingCart.ShoppingCartResponseDto;
+import mate.academy.dao.shoppingcart.ShoppingCartResponseDto;
+import mate.academy.exception.BadCredentialsException;
 import mate.academy.exception.EntityNotFoundException;
 import mate.academy.mapper.ShoppingCartMapper;
+import mate.academy.model.Book;
 import mate.academy.model.CartItem;
 import mate.academy.model.ShoppingCart;
 import mate.academy.model.User;
+import mate.academy.repository.BookRepository;
+import mate.academy.repository.CartItemRepository;
 import mate.academy.repository.ShoppingCartRepository;
 import mate.academy.service.ShoppingCartService;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ShoppingCartMapper shoppingCartMapper;
     private final ShoppingCartRepository shoppingCartRepository;
+    private final CartItemRepository cartItemRepository;
+    private final BookRepository bookRepository;
 
     @Override
     public void createShoppingCart(User user) {
+        if (shoppingCartRepository.findByUserId(user.getId()) != null) {
+            return;
+        }
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUser(user);
+        shoppingCart.setCartItem(new HashSet<>());
         shoppingCartRepository.save(shoppingCart);
     }
 
     @Override
     public ShoppingCartResponseDto getShoppingCartForCurrentUser(Long userId) {
-        return shoppingCartMapper.toDto(shoppingCartRepository.findByUserId(userId));
+        ShoppingCart cart = Optional.ofNullable(shoppingCartRepository.findByUserId(userId))
+                .orElseThrow(() -> new EntityNotFoundException("Shopping "
+                        + "cart not found for user id " + userId));
+        return shoppingCartMapper.toDto(cart);
     }
 
     @Override
     public ShoppingCartResponseDto addItemToCart(Long userId, Long bookId, int quantity) {
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than zero");
-        }
-
-        ShoppingCart currentshoppingCart = shoppingCartRepository.findByUserId(userId);
-        CartItem currentCartItem = shoppingCartRepository.findCartItemByUserIdAndBookId(userId, bookId);
+        validateQuantity(quantity);
+        ShoppingCart currentShoppingCart = Optional.ofNullable(shoppingCartRepository
+                        .findByUserId(userId))
+                .orElseThrow(() -> new EntityNotFoundException("Shopping"
+                        + "cart not found for user id " + userId));
+        CartItem currentCartItem = cartItemRepository.findCartItemByUserIdAndBookId(userId, bookId);
         if (currentCartItem == null) {
-            throw new EntityNotFoundException("Can't find cart item by book id " + bookId);
+            Book book = bookRepository.findById(bookId)
+                    .orElseThrow(() -> new EntityNotFoundException("Can't find book by id "
+                            + bookId));
+            currentCartItem = new CartItem();
+            currentCartItem.setBook(book);
+            currentCartItem.setShoppingCart(currentShoppingCart);
+            currentCartItem.setQuantity(quantity);
+        } else {
+            currentCartItem.setQuantity(currentCartItem.getQuantity() + quantity);
         }
-        currentCartItem.setQuantity(quantity);
-        shoppingCartRepository.save(currentCartItem);
-        currentshoppingCart.getCartItem().add(currentCartItem);
-        return shoppingCartMapper.toDto(currentshoppingCart);
+        cartItemRepository.save(currentCartItem);
+        if (currentShoppingCart.getCartItem() == null) {
+            currentShoppingCart.setCartItem(new HashSet<>());
+        }
+        currentShoppingCart.getCartItem().add(currentCartItem);
+        shoppingCartRepository.save(currentShoppingCart);
+        return shoppingCartMapper.toDto(currentShoppingCart);
     }
 
     @Override
     public ShoppingCartResponseDto updateCartItemQuantity(Long shoppingCartId,
                                                           Long cartItemId,
                                                           int quantity) {
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than zero");
-        }
+        validateQuantity(quantity);
+        ShoppingCart currentShoppingCart = shoppingCartRepository
+                .findById(shoppingCartId)
+                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id "
+                        + shoppingCartId));
 
-        ShoppingCart currentShoppingCart = shoppingCartRepository.findById(shoppingCartId)
-                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id " + shoppingCartId));
-        CartItem currentCartItem = shoppingCartRepository.findByCartItemId(cartItemId);
+        CartItem currentCartItem = Optional.ofNullable(cartItemRepository
+                        .findByCartItemId(cartItemId))
+                .orElseThrow(() -> new EntityNotFoundException("Can't find "
+                        + "cart item by id " + cartItemId));
+
+        if (!currentCartItem.getShoppingCart().getId().equals(currentShoppingCart.getId())) {
+            throw new IllegalArgumentException("Cart item does "
+                    + "not belong to the given shopping cart");
+        }
         currentCartItem.setQuantity(quantity);
-        shoppingCartRepository.save(currentCartItem);
+        cartItemRepository.save(currentCartItem);
         return shoppingCartMapper.toDto(currentShoppingCart);
     }
 
     @Override
     public void deleteCartItem(Long shoppingCartId, Long cartItemId) {
-        if (!shoppingCartRepository.existsById(shoppingCartId)) {
-            throw new EntityNotFoundException("Can't find shopping cart by id " + shoppingCartId);
+        ShoppingCart cart = shoppingCartRepository.findById(shoppingCartId)
+                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id "
+                        + shoppingCartId));
+        CartItem cartItem = Optional.ofNullable(cartItemRepository.findByCartItemId(cartItemId))
+                .orElseThrow(() -> new EntityNotFoundException("Can't find "
+                        + "cart item by id " + cartItemId));
+        if (!cartItem.getShoppingCart().getId().equals(shoppingCartId)) {
+            throw new IllegalArgumentException("Cart item does not "
+                    + "belong to the given shopping cart");
         }
-        shoppingCartRepository.deleteByCartItemId(cartItemId);
+        cartItemRepository.deleteByCartItemId(cartItemId);
+        cart.getCartItem().remove(cartItem);
+        shoppingCartRepository.save(cart);
+    }
+
+    private void validateQuantity(int quantity) {
+        if (quantity <= 0) {
+            throw new BadCredentialsException("Quantity must be greater than zero");
+        }
     }
 }
