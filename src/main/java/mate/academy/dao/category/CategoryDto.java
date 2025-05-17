@@ -1,4 +1,4 @@
-package mate.academy.dao;
+package mate.academy.dao.category;
 
 import lombok.Data;
 

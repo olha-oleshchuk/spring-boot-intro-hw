@@ -1,4 +1,4 @@
-package mate.academy.dao;
+package mate.academy.dao.book;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
