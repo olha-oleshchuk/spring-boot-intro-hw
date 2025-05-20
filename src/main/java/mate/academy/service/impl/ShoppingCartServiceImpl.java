@@ -1,6 +1,6 @@
 package mate.academy.service.impl;
 
-import java.util.HashSet;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import mate.academy.dao.shoppingcart.ShoppingCartResponseDto;
 import mate.academy.exception.EntityNotFoundException;
@@ -17,6 +17,7 @@ import mate.academy.service.ShoppingCartService;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ShoppingCartMapper shoppingCartMapper;
@@ -27,12 +28,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public void createShoppingCart(User user) {
-        if (shoppingCartRepository.findByUserId(user.getId()).isPresent()) {
-            return;
-        }
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUser(user);
-        shoppingCart.setCartItem(new HashSet<>());
         shoppingCartRepository.save(shoppingCart);
     }
 
@@ -78,15 +75,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public void deleteCartItem(Long shoppingCartId, Long cartItemId) {
+    public ShoppingCartResponseDto deleteCartItem(Long shoppingCartId, Long cartItemId) {
         CartItem currentCartItem = cartItemRepository
                 .findByIdAndShoppingCartId(cartItemId, shoppingCartId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find cart item with id " + cartItemId
                                 + " in shopping cart with id " + shoppingCartId));
         ShoppingCart cart = currentCartItem.getShoppingCart();
-        cartItemRepository.deleteByCartItemId(cartItemId);
         cart.getCartItem().remove(currentCartItem);
-        shoppingCartRepository.save(cart);
+        cartItemRepository.delete(currentCartItem);
+        return shoppingCartMapper.toDto(cart);
     }
 }
