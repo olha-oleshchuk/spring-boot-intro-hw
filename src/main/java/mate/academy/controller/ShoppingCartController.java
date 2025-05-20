@@ -3,6 +3,7 @@ package mate.academy.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import mate.academy.dao.shoppingcart.AddCartItemRequestDto;
 import mate.academy.dao.shoppingcart.ShoppingCartResponseDto;
@@ -60,8 +61,8 @@ public class ShoppingCartController {
             @PathVariable Long cartItemId,
             @RequestBody @Valid UpdateCartItemRequestDto requestDto,
             @AuthenticationPrincipal User user) {
-        ShoppingCart cart = shoppingCartRepository.getEntityByUserId(user.getId());
-        return shoppingCartService.updateCartItemQuantity(cart.getId(),
+        Optional<ShoppingCart> cart = shoppingCartRepository.findByUserId(user.getId());
+        return shoppingCartService.updateCartItemQuantity(user.getId(),
                 cartItemId, requestDto.getQuantity());
     }
 
@@ -72,7 +73,6 @@ public class ShoppingCartController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long cartItemId,
                        @AuthenticationPrincipal User user) {
-        ShoppingCart cart = shoppingCartRepository.getEntityByUserId(user.getId());
-        shoppingCartService.deleteCartItem(cart.getId(), cartItemId);
+        shoppingCartService.deleteCartItem(cartItemId, user.getId());
     }
 }

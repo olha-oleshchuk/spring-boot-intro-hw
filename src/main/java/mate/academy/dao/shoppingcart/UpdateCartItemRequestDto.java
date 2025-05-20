@@ -10,7 +10,6 @@ public class UpdateCartItemRequestDto {
     @Positive
     private Long cartItemId;
 
-    @NotNull
     @Positive
-    private Integer quantity;
+    private int quantity;
 }
