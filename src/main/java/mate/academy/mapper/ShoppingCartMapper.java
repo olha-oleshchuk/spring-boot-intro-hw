@@ -11,5 +11,5 @@ import org.mapstruct.Mapper;
 public interface ShoppingCartMapper {
     ShoppingCartResponseDto toDto(ShoppingCart shoppingCart);
 
-    CartItemResponseDto toEntity(CartItem cartItem);
+    CartItemResponseDto toDto(CartItem cartItem);
 }

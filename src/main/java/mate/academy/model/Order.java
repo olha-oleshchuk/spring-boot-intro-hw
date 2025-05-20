@@ -1,7 +1,13 @@
 package mate.academy.model;
 
-import ch.qos.logback.core.status.Status;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
@@ -22,24 +28,23 @@ public class Order {
     private Long id;
 
     @Column(nullable = false)
-    Long userId;
+    private Long userId;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
 
     @Column(nullable = false)
-    BigDecimal total;
+    private BigDecimal total;
 
     @Column(nullable = false)
-    LocalDateTime orderDate;
+    private LocalDateTime orderDate;
 
     @Column(nullable = false)
-    String shippingAddress;
+    private String shippingAddress;
 
-    Set<OrderItem> orderItems;
+    private Set<OrderItem> orderItems;
 
-    @Column(nullable = false)
     private boolean isDeleted = false;
 
     public enum Status {

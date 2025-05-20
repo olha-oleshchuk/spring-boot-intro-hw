@@ -24,17 +24,15 @@ public class OrderItem {
     private Long id;
 
     @Column(nullable = false)
-    Long orderID;
+    private Long orderID;
 
     @Column(nullable = false)
-    Long bookID;
+    private Long bookID;
+
+    private int quantity;
 
     @Column(nullable = false)
-    int quantity;
+    private BigDecimal price;
 
-    @Column(nullable = false)
-    BigDecimal price;
-
-    @Column(nullable = false)
     private boolean isDeleted = false;
 }

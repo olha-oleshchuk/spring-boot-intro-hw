@@ -32,15 +32,3 @@ databaseChangeLog:
                   type: INTEGER
                   constraints:
                     nullable: false
-        - createIndex:
-            tableName: cart_items
-            indexName: idx_cart_items_shopping_cart_id
-            columns:
-              - column:
-                  name: shopping_cart_id
-        - createIndex:
-            tableName: cart_items
-            indexName: idx_cart_items_book_id
-            columns:
-              - column:
-                  name: book_id

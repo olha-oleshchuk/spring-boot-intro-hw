@@ -1,5 +1,6 @@
 package mate.academy.controller;
 
+import java.util.List;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import mate.academy.dao.order.OrderRequestDto;
@@ -16,42 +17,33 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @Tag(name = "Orders management", description = "Endpoints for managing orders")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/orders")
 public class OrdersController {
     @GetMapping
-    public ResponseEntity<List<OrderResponseDto>> getAllOrders() {
+    public List<OrderResponseDto> getAllOrders() {
     }
 
     @PostMapping
-    public ResponseEntity<OrderResponseDto> createOrder(@RequestBody OrderRequestDto requestDto) {
+    public OrderResponseDto createOrder(@RequestBody OrderRequestDto requestDto) {
     }
 
     @GetMapping("/{orderId}/items")
-    public ResponseEntity<List<CartItemResponseDto>> getItemsByOrderId(@PathVariable Long orderId) {
+    public List<CartItemResponseDto> getItemsByOrderId(@PathVariable Long orderId) {
     }
 
     @GetMapping("/{orderId}/items/{itemId}")
-    public ResponseEntity<CartItemResponseDto> getItemByOrderIdAndItemId(
+    public CartItemResponseDto getItemByOrderIdAndItemId(
             @PathVariable Long orderId,
             @PathVariable Long itemId) {
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')") // restrict access to ADMIN
-    public ResponseEntity<OrderResponseDto> updateOrder(
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public OrderResponseDto updateOrderStatus(
             @PathVariable Long id,
             @RequestBody OrderUpdateDto updateDto) {
     }
-
-    GET: /api/orders
-    POST: /api/orders
-    GET: /api/orders/{orderId}/items
-    GET: /api/orders/{orderId}/items/{itemId}
-    admin
-    PATCH: /api/orders/{id}
 }
