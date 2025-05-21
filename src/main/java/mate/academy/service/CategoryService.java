@@ -1,6 +1,6 @@
 package mate.academy.service;
 
-import mate.academy.dao.CategoryDto;
+import mate.academy.dao.category.CategoryDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

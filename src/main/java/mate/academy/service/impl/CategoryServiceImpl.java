@@ -1,7 +1,7 @@
 package mate.academy.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import mate.academy.dao.CategoryDto;
+import mate.academy.dao.category.CategoryDto;
 import mate.academy.exception.EntityNotFoundException;
 import mate.academy.mapper.CategoryMapper;
 import mate.academy.model.Category;
