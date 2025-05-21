@@ -5,10 +5,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import mate.academy.dao.order.OrderItemResponseDto;
 import mate.academy.dao.order.OrderRequestDto;
 import mate.academy.dao.order.OrderResponseDto;
 import mate.academy.dao.order.OrderUpdateDto;
-import mate.academy.dao.shoppingcart.CartItemResponseDto;
 import mate.academy.service.OrderService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -48,18 +48,20 @@ public class OrdersController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Get all items by order id", description = "Get all items by order id")
     @GetMapping("/{orderId}/items")
-    public List<CartItemResponseDto> getItemsByOrderId(@PathVariable Long orderId) {
-        return orderService.getItemsByOrderId(orderId);
+    public List<OrderItemResponseDto> getItemsByOrderId(@PathVariable Long userId,
+                                                        @PathVariable Long orderId) {
+        return orderService.getItemsByOrderId(userId, orderId);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Get specific item by order and item id",
             description = "Get specific item by order and item id")
     @GetMapping("/{orderId}/items/{itemId}")
-    public CartItemResponseDto getItemByOrderIdAndItemId(
+    public OrderItemResponseDto getItemByOrderIdAndItemId(
+            @PathVariable Long userId,
             @PathVariable Long orderId,
             @PathVariable Long itemId) {
-        return orderService.getItemByOrderIdAndItemId(orderId, itemId);
+        return orderService.getItemByOrderIdAndItemId(userId, orderId, itemId);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
