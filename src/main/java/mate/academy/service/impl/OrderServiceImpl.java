@@ -1,14 +1,14 @@
 package mate.academy.service.impl;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import mate.academy.dao.order.OrderRequestDto;
 import mate.academy.dao.order.OrderResponseDto;
 import mate.academy.dao.order.OrderUpdateDto;
 import mate.academy.dao.shoppingcart.CartItemResponseDto;
+import mate.academy.exception.EntityNotFoundException;
 import mate.academy.mapper.OrderMapper;
 import mate.academy.model.Order;
 import mate.academy.model.OrderItem;
@@ -35,21 +35,22 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderResponseDto> getAllOrders(Long userId, Pageable pageable) {
-        return orderRepository.getAllByUserId(userId, pageable).stream()
+        return orderRepository.findAllByUserId(userId, pageable).stream()
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public CartItemResponseDto getItemByOrderIdAndItemId(Long orderId, Long itemId) {
-        OrderItem item = orderItemRepository.getByOrderIdAndItemId(orderId, itemId)
-                .orElseThrow(() -> new RuntimeException("Item not found"));
+        OrderItem item = orderItemRepository.findByOrderIdAndItemId(orderId, itemId)
+                .orElseThrow(() -> new EntityNotFoundException("Can't find order item by order id "
+                        + orderId + " and item id " + itemId));
         return orderMapper.toDto(item);
     }
 
     @Override
     public List<CartItemResponseDto> getItemsByOrderId(Long orderId) {
-        return orderItemRepository.getAllItemsByOrderId(orderId).stream()
+        return orderItemRepository.findAllByOrderId(orderId).stream()
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -57,7 +58,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponseDto updateOrderStatus(Long orderId, OrderUpdateDto updateDto) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Can't find order by id " + orderId));
         order.setStatus(updateDto.getStatus());
         return orderMapper.toDto(orderRepository.save(order));
     }

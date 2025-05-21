@@ -1,21 +1,18 @@
 package mate.academy.dao.order;
 
-import jakarta.validation.constraints.NotNull;
-import mate.academy.dao.shoppingcart.ShoppingCartResponseDto;
-import mate.academy.model.Order;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import lombok.Data;
+import mate.academy.model.Order;
 
+@Data
 public class OrderResponseDto {
-    @NotNull
-    private ShoppingCartResponseDto shoppingCartResponseDto;
-
-    @NotNull
-    private Order.Status status;
-
-    @NotNull
-    private BigDecimal total;
-
-    @NotNull
+    private Long id;
+    private Long userId;
+    private List<OrderItemResponseDto> orderItems;
     private LocalDateTime orderDate;
+    private BigDecimal total;
+    private Order.Status status;
 }
+

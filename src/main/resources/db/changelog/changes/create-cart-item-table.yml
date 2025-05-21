@@ -29,6 +29,6 @@ databaseChangeLog:
                     references: books(id)
               - column:
                   name: quantity
-                  type: INTEGER
+                  type: int
                   constraints:
                     nullable: false
