@@ -1,8 +1,10 @@
 package mate.academy.service.impl;
 
 import jakarta.transaction.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import mate.academy.dao.order.OrderItemResponseDto;
 import mate.academy.dao.order.OrderRequestDto;
@@ -26,9 +28,23 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
 
+    // 1. Отримуємо користувача (в залежності від реалізації безпеки)
+    // 2. Отримуємо shopping cart
+    // 3. Створюємо замовлення
+    // 4. Створюємо список OrderItem
+    // 5. Підраховуємо total
+    // 6. Зберігаємо замовлення
+    // 7. Очищаємо кошик
+    // 8. Повертаємо DTO
+
     @Override
     public OrderResponseDto createOrder(OrderRequestDto requestDto) {
         Order order = orderMapper.toEntity(requestDto);
+        order.setOrderDate(LocalDateTime.now());
+        int price = 0;
+        order.setTotal(BigDecimal.ZERO); order.getOrderItems()
+                .forEach(item -> {price =+ item.getPrice()});
+        order.setStatus(order.getStatus());
         orderRepository.save(order);
         return orderMapper.toDto(order);
     }
@@ -52,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderItemResponseDto> getItemsByOrderId(Long userId, Long orderId) {
         return orderItemRepository.findByOrderIdAndUserId(userId, orderId).stream()
                 .map(orderMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

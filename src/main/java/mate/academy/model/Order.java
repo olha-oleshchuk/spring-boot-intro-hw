@@ -47,7 +47,7 @@ public class Order {
     private String shippingAddress;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,
-            orphanRemoval = true, fetch = FetchType.LAZY)
+            orphanRemoval = true)
     private Set<OrderItem> orderItems;
 
     private boolean isDeleted = false;
