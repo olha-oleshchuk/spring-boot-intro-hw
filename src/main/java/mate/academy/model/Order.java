@@ -9,7 +9,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,6 +35,10 @@ public class Order {
     @Column(nullable = false)
     private Long userId;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -47,7 +53,7 @@ public class Order {
     private String shippingAddress;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,
-            orphanRemoval = true, fetch = FetchType.LAZY)
+            orphanRemoval = true)
     private Set<OrderItem> orderItems;
 
     private boolean isDeleted = false;

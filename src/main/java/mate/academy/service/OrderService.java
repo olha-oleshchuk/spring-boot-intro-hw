@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 public interface OrderService {
     List<OrderResponseDto> getAllOrders(Long userId, Pageable pageable);
 
-    OrderResponseDto createOrder(OrderRequestDto requestDto);
+    OrderResponseDto createOrder(Long userId, OrderRequestDto orderRequestDto);
 
     List<OrderItemResponseDto> getItemsByOrderId(Long userId, Long orderId);
 
