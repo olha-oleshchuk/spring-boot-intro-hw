@@ -6,7 +6,7 @@ import mate.academy.dao.order.OrderResponseDto;
 import mate.academy.model.Order;
 import org.mapstruct.Mapper;
 
-@Mapper(config = MapperConfig.class)
+@Mapper(config = MapperConfig.class, uses = OrderItemMapper.class)
 public interface OrderMapper {
     OrderResponseDto toDto(Order order);
 
