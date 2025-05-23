@@ -34,5 +34,5 @@ public class ShoppingCart {
     private boolean isDeleted = false;
 
     @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<CartItem> cartItem = new HashSet<>();
+    private Set<CartItem> cartItems = new HashSet<>();
 }

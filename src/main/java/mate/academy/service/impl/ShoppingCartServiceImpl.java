@@ -82,7 +82,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                         "Can't find cart item with id " + cartItemId
                                 + " in shopping cart with id " + shoppingCartId));
         ShoppingCart cart = currentCartItem.getShoppingCart();
-        cart.getCartItem().remove(currentCartItem);
+        cart.getCartItems().remove(currentCartItem);
         cartItemRepository.delete(currentCartItem);
         return shoppingCartMapper.toDto(cart);
     }
